@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface DocumentService {
     DocumentDto uploadDocument(Long categoryId, MultipartFile file, Integer ownerId);
 
-    Page<DocumentDto> listMyDocuments(Integer ownerId, Pageable pageable);
+    Page<DocumentDto> listMyDocuments(Integer ownerId, Long categoryId, Pageable pageable);
 
     Page<DocumentDto> listAllDocuments(Pageable pageable);
 

@@ -76,11 +76,11 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<DocumentDto> listMyDocuments(Integer ownerId, Pageable pageable) {
+    public Page<DocumentDto> listMyDocuments(Integer ownerId, Long categoryId, Pageable pageable) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new BadRequestException("Owner not found"));
 
-        return documentRepository.findByOwner(owner, pageable)
+        return documentRepository.findByOwnerIdAndCategoryId(owner.getId(), categoryId, pageable)
                 .map(this::toDto);
     }
 

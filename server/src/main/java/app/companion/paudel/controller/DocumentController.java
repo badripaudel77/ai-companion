@@ -28,10 +28,10 @@ public class DocumentController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/mine")
-    public ResponseEntity<Page<DocumentDto>> myDocuments(Pageable pageable) {
+    @GetMapping("/mine/{categoryId}")
+    public ResponseEntity<Page<DocumentDto>> myDocuments(@PathVariable Long categoryId, Pageable pageable) {
         Integer ownerId = authUtils.currentUserId();
-        return ResponseEntity.ok(documentService.listMyDocuments(ownerId, pageable));
+        return ResponseEntity.ok(documentService.listMyDocuments(ownerId, categoryId, pageable));
     }
 
     @GetMapping("/all")
