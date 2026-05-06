@@ -1,0 +1,31 @@
+<section class="auth-page">
+  <div class="hero-panel">
+    <p class="eyebrow">Create your private space</p>
+    <h1>One account for secure documents and future AI workflows.</h1>
+    <p class="hero-copy">
+      Register once, then use the same identity for document uploads, role-based controls, and
+      downstream AI features.
+    </p>
+  </div>
+
+  <div class="form-shell">
+    <div class="form-card">
+      <header>
+        <p class="form-kicker">Get started</p>
+        <h2>Create account</h2>
+      </header>
+
+      <app-register-form
+        [form]="form"
+        [loading]="loading()"
+        [error]="error()"
+        (submitted)="submit($event)"
+      />
+
+      <p class="form-footnote">
+        Already have an account?
+        <a routerLink="/auth/login">Sign in</a>
+      </p>
+    </div>
+  </div>
+</section>

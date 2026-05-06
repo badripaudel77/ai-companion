@@ -1,0 +1,88 @@
+.workspace-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background:
+    radial-gradient(circle at top left, rgba(13, 148, 136, 0.18), transparent 32%),
+    linear-gradient(180deg, #f8fafc 0%, #eef6f5 100%);
+}
+
+.workspace-card {
+  width: min(100%, 620px);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 2rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 30px 70px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0f766e;
+}
+
+.workspace-card h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.05em;
+}
+
+.workspace-copy {
+  margin: 1rem 0 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.user-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.user-grid div {
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.user-grid dt {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #0f766e;
+  font-weight: 800;
+}
+
+.user-grid dd {
+  margin: 0.35rem 0 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.logout-button {
+  border: 0;
+  border-radius: 1rem;
+  padding: 0.95rem 1.2rem;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-link {
+  display: inline-block;
+  margin-left: 1rem;
+  color: #0f766e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.secondary-link:hover {
+  text-decoration: underline;
+}

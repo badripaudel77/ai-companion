@@ -1,0 +1,25 @@
+<section class="workspace-shell">
+  <div class="workspace-card">
+    <p class="eyebrow">Authenticated session</p>
+    <h1>You're signed in.</h1>
+    <p class="workspace-copy">
+      This protected route is ready for your future document and category workflows.
+    </p>
+
+    @if (user(); as currentUser) {
+      <dl class="user-grid">
+        <div>
+          <dt>Email</dt>
+          <dd>{{ currentUser.email }}</dd>
+        </div>
+        <div>
+          <dt>Role</dt>
+          <dd>{{ currentUser.role }}</dd>
+        </div>
+      </dl>
+    }
+
+    <button type="button" class="logout-button" (click)="logout()">Sign out</button>
+    <a routerLink="/auth/register" class="secondary-link">Create another account</a>
+  </div>
+</section>

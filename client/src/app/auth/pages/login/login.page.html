@@ -1,0 +1,34 @@
+<section class="auth-page">
+  <div class="hero-panel">
+    <p class="eyebrow">Private Knowledge Workspace</p>
+    <h1>Your AI Companion</h1>
+    <p class="hero-copy">
+        Sign in to securely manage your documents and access future AI features. Your account is
+        the key to unlocking personalized insights and workflows.
+    </p>
+  </div>
+
+  <div class="form-shell">
+    <div class="form-card">
+      <header>
+        <p class="form-kicker">Welcome back</p>
+        <h2>Sign in</h2>
+        @if (registeredMessage()) {
+          <p class="status-message">{{ registeredMessage() }}</p>
+        }
+      </header>
+
+      <app-login-form
+        [form]="form"
+        [loading]="loading()"
+        [error]="error()"
+        (submitted)="submit($event)"
+      />
+
+      <p class="form-footnote">
+        New here?
+        <a routerLink="/auth/register">Create an account</a>
+      </p>
+    </div>
+  </div>
+</section>

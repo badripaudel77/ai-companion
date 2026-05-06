@@ -1,0 +1,62 @@
+.auth-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-alert {
+  border-radius: 1rem;
+  padding: 0.875rem 1rem;
+  background: rgba(187, 28, 28, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(187, 28, 28, 0.2);
+}
+
+.field-group {
+  display: grid;
+  gap: 0.45rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.field-group input {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.field-group input:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+  transform: translateY(-1px);
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 0.86rem;
+}
+
+.submit-button {
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(15, 118, 110, 0.24);
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
