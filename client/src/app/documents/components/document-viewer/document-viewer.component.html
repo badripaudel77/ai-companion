@@ -1,0 +1,69 @@
+<div class="viewer-overlay" (click)="closeViewer()">
+  <div class="viewer-modal" (click)="$event.stopPropagation()">
+    <div class="viewer-header">
+      <div class="header-content">
+        <span class="file-icon">{{ getFileIcon() }}</span>
+        <div class="file-info">
+          <h2>{{ document.filename }}</h2>
+          <p class="content-type">{{ document.contentType }}</p>
+        </div>
+      </div>
+      <button type="button" class="close-button" (click)="closeViewer()" aria-label="Close viewer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="viewer-content">
+      @if (loading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading document...</p>
+        </div>
+      } @else if (error()) {
+        <div class="error-state">
+          <p class="error-icon">⚠️</p>
+          <p>{{ error() }}</p>
+          <button type="button" class="download-fallback" (click)="downloadDocument()">
+            Download Instead
+          </button>
+        </div>
+      } @else if (canViewInline()) {
+        @switch (getViewType()) {
+          @case ('pdf') {
+            <iframe [src]="documentUrl()" class="pdf-viewer" title="PDF Viewer"></iframe>
+          }
+          @case ('image') {
+            <div class="image-viewer">
+              <img [src]="documentUrl()" [alt]="document.filename" />
+            </div>
+          }
+        }
+      } @else {
+        <div class="unsupported-state">
+          <p class="unsupported-icon">📋</p>
+          <p>This file type cannot be previewed in the browser.</p>
+          <button type="button" class="download-button" (click)="downloadDocument()">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <path d="M10 1V12M15.5 6.5L10 12L4.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M2 17H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Download File
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="viewer-footer">
+      <button type="button" class="download-btn" (click)="downloadDocument()">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M10 1V12M15.5 6.5L10 12L4.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 17H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Download
+      </button>
+      <button type="button" class="close-btn" (click)="closeViewer()">Close</button>
+    </div>
+  </div>
+</div>

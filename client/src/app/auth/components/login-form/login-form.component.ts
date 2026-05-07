@@ -17,16 +17,16 @@ type LoginFormControls = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginFormComponent {
-  @Input({ required: true }) form!: FormGroup<LoginFormControls>;
-  @Input() loading = false;
-  @Input() error: string | null = null;
-  @Output() submitted = new EventEmitter<LoginRequest>();
+    @Input({ required: true }) form!: FormGroup<LoginFormControls>;
+    @Input() loading = false;
+    @Input() error: string | null = null;
+    @Output() submitted = new EventEmitter<LoginRequest>();
 
-  submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    submit(): void {
+      if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+      }
 
     this.submitted.emit({
       email: this.form.controls.email.value,

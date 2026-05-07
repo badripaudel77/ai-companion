@@ -32,7 +32,7 @@ export const login$ = createEffect(
         authApi.login(request).pipe(
           map((response) => {
             if (!response.token) {
-              return authActions.loginFailure({ error: 'Missing JWT token from the server.' });
+                return authActions.loginFailure({ error: 'Missing JWT token from the server.' });
             }
             const user = mapUser(response);
             storage.saveSession(response, user);

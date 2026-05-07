@@ -1,0 +1,28 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+  </div>
+
+  <nav class="sidebar-menu">
+    @for (item of menuItems; track item.id) {
+      <button
+        type="button"
+        class="menu-item"
+        [class.active]="isActive(item.id)"
+        (click)="selectMenuItem(item.id)"
+        [attr.aria-current]="isActive(item.id) ? 'page' : false"
+      >
+        <span class="menu-icon">{{ item.icon }}</span>
+        <div class="menu-text">
+          <span class="menu-label">{{ item.label }}</span>
+          @if (item.description) {
+            <span class="menu-description">{{ item.description }}</span>
+          }
+        </div>
+        @if (isActive(item.id)) {
+          <span class="menu-indicator"></span>
+        }
+      </button>
+    }
+  </nav>
+</aside>

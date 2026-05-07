@@ -1,0 +1,95 @@
+<section class="dashboard-shell">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1>My Companion</h1>
+        @if (user(); as currentUser) {
+          <p class="user-greeting">{{ currentUser.email }}</p>
+        }
+      </div>
+      <div class="header-right">
+        <button type="button" class="logout-button" (click)="logout()">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="sidebar-wrapper">
+      <app-sidebar
+        [activeMenuId]="activeMenu()"
+        (menuChanged)="onMenuChange($event)"
+      />
+    </div>
+
+    <main class="dashboard-content">
+      @switch (activeMenu()) {
+        @case ('documents') {
+          @if (categoriesLoading()) {
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading your documents...</p>
+            </div>
+          } @else if (categories().length === 0) {
+            <div class="empty-state">
+              <p class="empty-icon">📁</p>
+              <h2>No categories yet</h2>
+              <p>Create a category to get started organizing your documents.</p>
+            </div>
+          } @else {
+            <div class="categories-grid">
+              @for (category of categories(); track category.id) {
+                <div class="category-section">
+                  <app-category-group
+                    [category]="category"
+                    [isExpanded]="expandedCategoryIds().has(category.id)"
+                    [isLoading]="documentsByCategory()[category.id.toString()]?.loading ?? false"
+                    (expandClicked)="toggleCategoryExpand(category.id)"
+                  />
+
+                  @if (expandedCategoryIds().has(category.id)) {
+                    <div class="documents-section">
+                      <app-document-upload
+                        [categoryName]="category.name"
+                        [isUploading]="uploadingCategoryIds().has(category.id)"
+                        [error]="uploadErrors()[category.id.toString()] ?? null"
+                        (uploadRequested)="onUploadDocument(category.id, $event)"
+                      />
+
+                      @if ((documentsByCategory()[category.id.toString()]?.documents ?? []).length > 0) {
+                        <app-document-list
+                          [documents]="documentsByCategory()[category.id.toString()]?.documents ?? []"
+                          (downloadClicked)="onDownloadDocument($event)"
+                          (viewClicked)="onViewDocument($event)"
+                        />
+                      } @else {
+                        <div class="no-documents">
+                          <p>No documents in this category</p>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+        @case ('create') {
+          <app-create-content />
+        }
+        @case ('shared') {
+          <app-shared-content />
+        }
+        @case ('settings') {
+          <app-settings-content />
+        }
+      }
+    </main>
+  </div>
+
+  @if (viewedDocument(); as doc) {
+    <app-document-viewer
+      [document]="doc"
+      (closed)="viewedDocument.set(null)"
+    />
+  }
+</section>

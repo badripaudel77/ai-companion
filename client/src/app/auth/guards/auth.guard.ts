@@ -11,7 +11,7 @@ export const authGuard: CanActivateFn = () => {
 
   const token = store.selectSignal(selectToken)();
   if (token || storage.hasValidSession()) {
-    return true;
+       return true;
   }
 
   return router.createUrlTree(['/auth/login']);

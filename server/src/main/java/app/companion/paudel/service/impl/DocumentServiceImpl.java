@@ -103,6 +103,13 @@ public class DocumentServiceImpl implements DocumentService {
                 .map(this::toDto);
     }
 
+    @Override
+    public DocumentDto getDocument(Long documentId, Integer requesterId) {
+        Document doc = documentRepository.findById(documentId)
+                .orElseThrow(() -> new BadRequestException("Document not found"));
+        return toDto(doc);
+    }
+
     private DocumentDto toDto(Document d) {
         return DocumentDto.builder()
                 .id(d.getId())

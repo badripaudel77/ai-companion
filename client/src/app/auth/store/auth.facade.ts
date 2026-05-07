@@ -15,14 +15,14 @@ export class AuthFacade {
   readonly isAuthenticated = computed(() => !!this.token());
 
   login(request: LoginRequest): void {
-    this.store.dispatch(authActions.login({ request }));
+      this.store.dispatch(authActions.login({ request }));
   }
 
   register(request: RegisterRequest): void {
-    this.store.dispatch(authActions.register({ request }));
+      this.store.dispatch(authActions.register({ request }));
   }
 
   logout(): void {
-    this.store.dispatch(authActions.logout());
+      this.store.dispatch(authActions.logout());
   }
 }

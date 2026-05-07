@@ -1,0 +1,59 @@
+@if (documents.length === 0) {
+  <div class="empty-state">
+    <p>No documents in this category yet.</p>
+  </div>
+} @else {
+  <div class="documents-table">
+    <div class="table-header">
+      <div class="col-icon"></div>
+      <div class="col-name">Name</div>
+      <div class="col-size">Size</div>
+      <div class="col-date">Date</div>
+      <div class="col-action">Action</div>
+    </div>
+
+    @for (doc of documents; track doc.id) {
+      <div class="table-row">
+        <div class="col-icon">{{ getFileIcon(doc.contentType) }}</div>
+        <div class="col-name">
+          <span class="filename">{{ doc.filename }}</span>
+          <span class="content-type">{{ doc.contentType }}</span>
+        </div>
+        <div class="col-size">{{ formatFileSize(doc.size) }}</div>
+        <div class="col-date">{{ formatDate(doc.createdAt) }}</div>
+        <div class="col-action">
+          <button 
+            type="button"
+            class="icon-button view-button"
+            (click)="onView(doc)"
+            [attr.aria-label]="'View ' + doc.filename"
+            title="View"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+          <button 
+            type="button"
+            class="icon-button download-button"
+            (click)="onDownload(doc)"
+            [disabled]="downloadingIds.has(doc.id)"
+            [attr.aria-label]="'Download ' + doc.filename"
+            [title]="downloadingIds.has(doc.id) ? 'Downloading...' : 'Download'"
+          >
+            @if (downloadingIds.has(doc.id)) {
+              <span class="spinner"></span>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

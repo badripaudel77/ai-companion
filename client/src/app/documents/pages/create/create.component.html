@@ -1,0 +1,45 @@
+<section class="create-panel">
+  <div class="create-hero">
+    <p class="eyebrow">Create</p>
+    <h2>Add a new category</h2>
+    <p>
+      Keep your documents organized by creating categories first. You can always add documents to categories later.
+    </p>
+  </div>
+
+  <form class="create-form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field">
+      <span>Name</span>
+      <input type="text" formControlName="name" placeholder="Enter category name" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <small class="error">Category name is required and must be at most 100 characters.</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Description</span>
+      <textarea
+        formControlName="description"
+        rows="5"
+        placeholder="Optional description for this category"
+      ></textarea>
+      @if (form.controls.description.touched && form.controls.description.invalid) {
+        <small class="error">Description must be at most 500 characters.</small>
+      }
+    </label>
+
+    @if (categoryCreateError()) {
+      <div class="form-alert error-alert">{{ categoryCreateError() }}</div>
+    }
+
+    <div class="form-actions">
+      <button type="submit" class="submit-button" [disabled]="categoryCreateLoading()">
+        @if (categoryCreateLoading()) {
+          Creating...
+        } @else {
+          Create category
+        }
+      </button>
+    </div>
+  </form>
+</section>

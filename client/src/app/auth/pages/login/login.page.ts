@@ -11,12 +11,12 @@ type LoginFormControls = {
 };
 
 @Component({
-  selector: 'app-login-page',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, LoginFormComponent],
-  templateUrl: './login.page.html',
-  styleUrl: './login.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-login-page',
+    standalone: true,
+    imports: [ReactiveFormsModule, RouterLink, LoginFormComponent],
+    templateUrl: './login.page.html',
+    styleUrl: './login.page.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginPageComponent {
   private readonly authFacade = inject(AuthFacade);
@@ -38,11 +38,11 @@ export class LoginPageComponent {
 
   constructor() {
     if (this.route.snapshot.queryParamMap.get('registered') === 'true') {
-      this.registeredMessage.set('Account created successfully. Sign in to continue.');
+          this.registeredMessage.set('Account created successfully. Sign in to continue.');
     }
   }
 
   submit(request: LoginRequest): void {
-    this.authFacade.login(request);
+        this.authFacade.login(request);
   }
 }

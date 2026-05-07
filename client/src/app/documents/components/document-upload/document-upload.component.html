@@ -1,0 +1,39 @@
+<section class="upload-card">
+  <div class="upload-header">
+    <div>
+      <p class="upload-label">Add Document</p>
+      <h4>{{ categoryName }}</h4>
+    </div>
+    <span class="upload-hint">PDF, DOC, DOCX up to 10MB</span>
+  </div>
+
+  <div class="upload-form">
+    <label class="file-field">
+      <input type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" (change)="onFileSelected($event)" />
+      <span class="file-text">
+        @if (selectedFile) {
+          {{ selectedFile.name }}
+        } @else {
+          Choose a file to upload
+        }
+      </span>
+    </label>
+
+    <div class="upload-actions">
+      <button type="button" class="clear-button" (click)="clearSelectedFile()" [disabled]="!selectedFile || isUploading">
+        Clear
+      </button>
+      <button type="button" class="upload-button" (click)="submit()" [disabled]="!selectedFile || isUploading">
+        @if (isUploading) {
+          Uploading...
+        } @else {
+          Upload document
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="upload-error">{{ error }}</p>
+  }
+</section>

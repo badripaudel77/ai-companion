@@ -7,7 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = storage.readToken();
 
   if (!token) {
-    return next(req);
+      return next(req);
   }
 
   return next(

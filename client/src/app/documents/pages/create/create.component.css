@@ -1,0 +1,144 @@
+.create-panel {
+  max-width: 780px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.create-hero {
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(255, 255, 255, 0.65));
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.create-hero h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #0f172a;
+}
+
+.create-hero p {
+  margin: 0.65rem 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.create-form {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.9rem 1rem;
+  font: inherit;
+  color: #0f172a;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.82rem;
+}
+
+.form-alert {
+  border-radius: 0.85rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+}
+
+.error-alert {
+  background: rgba(248, 113, 113, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  border: 0;
+  border-radius: 0.85rem;
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 118, 110, 0.24);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .create-panel {
+    gap: 1rem;
+  }
+
+  .create-hero,
+  .create-form {
+    padding: 1.1rem;
+  }
+
+  .create-hero h2 {
+    font-size: 1.4rem;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}

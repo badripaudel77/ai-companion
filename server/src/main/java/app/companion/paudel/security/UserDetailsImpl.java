@@ -1,6 +1,5 @@
 package app.companion.paudel.security;
 
-
 import app.companion.paudel.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

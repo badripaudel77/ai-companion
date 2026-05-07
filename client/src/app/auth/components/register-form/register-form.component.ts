@@ -4,18 +4,18 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RegisterRequest } from '../../models/auth.models';
 
 type RegisterFormControls = {
-  fullname: FormControl<string>;
-  email: FormControl<string>;
-  password: FormControl<string>;
+    fullname: FormControl<string>;
+    email: FormControl<string>;
+    password: FormControl<string>;
 };
 
 @Component({
-  selector: 'app-register-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-register-form',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './register-form.component.html',
+    styleUrl: './register-form.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterFormComponent {
   @Input({ required: true }) form!: FormGroup<RegisterFormControls>;
@@ -25,14 +25,14 @@ export class RegisterFormComponent {
 
   submit(): void {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+          this.form.markAllAsTouched();
+          return;
     }
 
     this.submitted.emit({
-      fullname: this.form.controls.fullname.value,
-      email: this.form.controls.email.value,
-      password: this.form.controls.password.value
+        fullname: this.form.controls.fullname.value,
+        email: this.form.controls.email.value,
+        password: this.form.controls.password.value
     });
   }
 }

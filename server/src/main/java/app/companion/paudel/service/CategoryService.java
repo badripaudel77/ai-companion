@@ -9,7 +9,5 @@ public interface CategoryService {
     CategoryDto createCategory(CreateCategoryRequest request, Integer ownerId);
 
     Page<CategoryDto> listMyCategories(Integer ownerId, Pageable pageable);
-
-    // other methods can be added later
 }
 

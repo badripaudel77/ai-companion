@@ -12,10 +12,14 @@ export const routes: Routes = [
 		loadChildren: () => import('./auth/routes/auth.routes').then((m) => m.AUTH_ROUTES)
 	},
 	{
-		path: 'workspace',
+		path: 'documents',
 		canActivate: [authGuard],
-		loadComponent: () =>
-			import('./auth/pages/workspace/workspace.page').then((m) => m.WorkspacePageComponent)
+		loadChildren: () => import('./documents/routes/documents.routes').then((m) => m.DOCUMENTS_ROUTES)
+	},
+	{
+		path: 'workspace',
+		pathMatch: 'full',
+		redirectTo: 'documents/dashboard'
 	},
 	{
 		path: '**',

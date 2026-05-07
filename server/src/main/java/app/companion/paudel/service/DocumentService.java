@@ -15,4 +15,6 @@ public interface DocumentService {
     byte[] downloadDocument(Long documentId, Integer requesterId);
 
     Page<DocumentDto> listAdminDocuments(Pageable pageable);
+
+    DocumentDto getDocument(Long documentId, Integer requesterId);
 }
