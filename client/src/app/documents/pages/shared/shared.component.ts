@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { DocumentsApiService } from '../../services/documents-api.service';
 import { DocumentListComponent } from '../../components/document-list/document-list.component';
 import { DocumentViewerComponent } from '../../components/document-viewer/document-viewer.component';
+import { AiModalComponent } from '../../components/ai-modal/ai-modal.component';
 import { Document } from '../../models/document.models';
 import { DocumentsFacade } from '../../store/documents.facade';
 
 @Component({
   selector: 'app-shared-content',
   standalone: true,
-  imports: [CommonModule, DocumentListComponent, DocumentViewerComponent],
+  imports: [CommonModule, DocumentListComponent, DocumentViewerComponent, AiModalComponent],
   template: `
     <div class="content-section">
       <div class="section-header">
@@ -38,6 +39,7 @@ import { DocumentsFacade } from '../../store/documents.facade';
           [documents]="adminDocuments()"
           (downloadClicked)="onDownloadDocument($event)"
           (viewClicked)="onViewDocument($event)"
+          (askAIClicked)="onAskAI($event)"
         />
       }
     </div>
@@ -46,6 +48,14 @@ import { DocumentsFacade } from '../../store/documents.facade';
       <app-document-viewer
         [document]="doc"
         (closed)="viewedDocument.set(null)"
+      />
+    }
+
+    @if (selectedDocumentForAI(); as aiDoc) {
+      <app-ai-modal
+        [documentName]="aiDoc.filename"
+        (closed)="onAIModalClose()"
+        (submitted)="onAISubmit($event)"
       />
     }
   `,
@@ -158,23 +168,41 @@ import { DocumentsFacade } from '../../store/documents.facade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SharedContentComponent implements OnInit {
-      private readonly facade = inject(DocumentsFacade);
-      private readonly api = inject(DocumentsApiService);
+  private readonly facade = inject(DocumentsFacade);
+  private readonly api = inject(DocumentsApiService);
 
-      readonly adminDocuments = this.facade.adminDocuments;
-      readonly adminDocumentsLoading = this.facade.adminDocumentsLoading;
-      readonly adminDocumentsError = this.facade.adminDocumentsError;
-      readonly viewedDocument = signal<Document | null>(null);
+  readonly adminDocuments = this.facade.adminDocuments;
+  readonly adminDocumentsLoading = this.facade.adminDocumentsLoading;
+  readonly adminDocumentsError = this.facade.adminDocumentsError;
+  readonly viewedDocument = signal<Document | null>(null);
+  readonly selectedDocumentForAI = signal<Document | null>(null);
 
-      ngOnInit(): void {
-        this.facade.loadAdminDocuments({ pageNumber: 0, pageSize: 50 });
-      }
+  ngOnInit(): void {
+    this.facade.loadAdminDocuments({ pageNumber: 0, pageSize: 50 });
+  }
 
-      onDownloadDocument(event: { id: number; filename: string }): void {
-        this.facade.downloadDocument(event.id, event.filename);
-      }
+  onDownloadDocument(event: { id: number; filename: string }): void {
+    this.facade.downloadDocument(event.id, event.filename);
+  }
 
-      onViewDocument(document: Document): void {
-        this.viewedDocument.set(document);
-      }
+  onViewDocument(document: Document): void {
+    this.viewedDocument.set(document);
+  }
+
+  onAskAI(document: Document): void {
+    this.selectedDocumentForAI.set(document);
+  }
+
+  onAIModalClose(): void {
+    this.selectedDocumentForAI.set(null);
+  }
+
+  onAISubmit(question: string): void {
+    const doc = this.selectedDocumentForAI();
+    if (doc) {
+      console.log(`Question about "${doc.filename}": ${question}`);
+      // TODO: Implement AI API call
+    }
+    this.selectedDocumentForAI.set(null);
+  }
 }

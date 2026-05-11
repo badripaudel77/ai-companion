@@ -129,6 +129,29 @@
   margin: 0;
 }
 
+.create-button {
+  margin-top: 1.5rem;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.create-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(15, 118, 110, 0.3);
+}
+
+.create-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(15, 118, 110, 0.2);
+}
+
 .categories-grid {
   display: grid;
   gap: 1.5rem;

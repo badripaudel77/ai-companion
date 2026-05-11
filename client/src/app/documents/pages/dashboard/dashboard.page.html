@@ -34,6 +34,9 @@
               <p class="empty-icon">📁</p>
               <h2>No categories yet</h2>
               <p>Create a category to get started organizing your documents.</p>
+              <button type="button" class="create-button" (click)="navigateToCreate()">
+                Create Category
+              </button>
             </div>
           } @else {
             <div class="categories-grid">
@@ -60,6 +63,7 @@
                           [documents]="documentsByCategory()[category.id.toString()]?.documents ?? []"
                           (downloadClicked)="onDownloadDocument($event)"
                           (viewClicked)="onViewDocument($event)"
+                          (askAIClicked)="onAskAI($event)"
                         />
                       } @else {
                         <div class="no-documents">
@@ -90,6 +94,14 @@
     <app-document-viewer
       [document]="doc"
       (closed)="viewedDocument.set(null)"
+    />
+  }
+
+  @if (selectedDocumentForAI(); as aiDoc) {
+    <app-ai-modal
+      [documentName]="aiDoc.filename"
+      (closed)="onAIModalClose()"
+      (submitted)="onAISubmit($event)"
     />
   }
 </section>

@@ -15,6 +15,7 @@ export class DocumentListComponent {
   @Input() downloadingIds: Set<number> = new Set();
   @Output() downloadClicked = new EventEmitter<{ id: number; filename: string }>();
   @Output() viewClicked = new EventEmitter<Document>();
+  @Output() askAIClicked = new EventEmitter<Document>();
 
   protected readonly onDownload = (doc: Document): void => {
     this.downloadClicked.emit({ id: doc.id, filename: doc.filename });
@@ -22,6 +23,10 @@ export class DocumentListComponent {
 
   protected readonly onView = (doc: Document): void => {
     this.viewClicked.emit(doc);
+  };
+
+  protected readonly onAskAI = (doc: Document): void => {
+    this.askAIClicked.emit(doc);
   };
 
   protected readonly formatFileSize = (bytes: number): string => {

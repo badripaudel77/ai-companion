@@ -8,6 +8,7 @@ import { CategoryGroupComponent } from '../../components/category-group/category
 import { DocumentListComponent } from '../../components/document-list/document-list.component';
 import { DocumentUploadComponent } from '../../components/document-upload';
 import { DocumentViewerComponent } from '../../components/document-viewer/document-viewer.component';
+import { AiModalComponent } from '../../components/ai-modal/ai-modal.component';
 import { SidebarComponent, MenuItemId } from '../../components/sidebar/sidebar.component';
 import { CreateContentComponent } from '../create/create.component';
 import { SharedContentComponent } from '../shared/shared.component';
@@ -22,6 +23,7 @@ import { SettingsContentComponent } from '../settings/settings.component';
     DocumentListComponent,
     DocumentUploadComponent,
     DocumentViewerComponent,
+    AiModalComponent,
     SidebarComponent,
     CreateContentComponent,
     SharedContentComponent,
@@ -46,6 +48,7 @@ export class DashboardPageComponent {
   protected readonly expandedCategoryIds = signal<Set<number>>(new Set());
   protected readonly activeMenu = signal<MenuItemId>('documents');
   protected readonly viewedDocument = signal<Document | null>(null);
+  protected readonly selectedDocumentForAI = signal<Document | null>(null);
 
   constructor() {
     this.loadCategories();
@@ -96,5 +99,26 @@ export class DashboardPageComponent {
 
   protected readonly navigateToWorkspace = (): void => {
       this.router.navigate(['/workspace']);
+  };
+
+  protected readonly navigateToCreate = (): void => {
+      this.activeMenu.set('create');
+  };
+
+  protected readonly onAskAI = (document: Document): void => {
+      this.selectedDocumentForAI.set(document);
+  };
+
+  protected readonly onAIModalClose = (): void => {
+      this.selectedDocumentForAI.set(null);
+  };
+
+  protected readonly onAISubmit = (question: string): void => {
+      const doc = this.selectedDocumentForAI();
+      if (doc) {
+          console.log(`Question about "${doc.filename}": ${question}`);
+          // TODO: Implement AI API call
+      }
+      this.selectedDocumentForAI.set(null);
   };
 }

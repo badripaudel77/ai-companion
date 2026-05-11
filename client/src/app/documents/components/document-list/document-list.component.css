@@ -108,6 +108,16 @@
   color: #0f766e;
 }
 
+.ai-button {
+  color: #8b5cf6;
+}
+
+.ai-button:hover:not(:disabled) {
+  border-color: #8b5cf6;
+  background-color: rgba(139, 92, 246, 0.05);
+  color: #8b5cf6;
+}
+
 .download-button {
   color: #0f766e;
 }

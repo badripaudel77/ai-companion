@@ -1,0 +1,43 @@
+<div class="ai-modal-overlay" (click)="onClose()">
+  <div class="ai-modal-content" (click)="$event.stopPropagation()">
+    <div class="ai-modal-header">
+      <h2>Ask AI about {{ documentName }}</h2>
+      <button
+        type="button"
+        class="close-button"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="ai-modal-body">
+      <textarea
+        class="ai-input"
+        placeholder="Ask a question about this document... (Ctrl+Enter to submit)"
+        [ngModel]="question()"
+        (ngModelChange)="onQuestionChange($event)"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+    </div>
+
+    <div class="ai-modal-footer">
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="onClose()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="submit-button"
+        (click)="onSubmit()"
+        [disabled]="!question().trim()"
+      >
+        Ask AI
+      </button>
+    </div>
+  </div>
+</div>
