@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DocumentsApiService } from '../../services/documents-api.service';
 import { DocumentListComponent } from '../../components/document-list/document-list.component';
 import { DocumentViewerComponent } from '../../components/document-viewer/document-viewer.component';
 import { AiModalComponent } from '../../components/ai-modal/ai-modal.component';
@@ -54,8 +53,8 @@ import { DocumentsFacade } from '../../store/documents.facade';
     @if (selectedDocumentForAI(); as aiDoc) {
       <app-ai-modal
         [documentName]="aiDoc.filename"
+        [documentId]="aiDoc.id"
         (closed)="onAIModalClose()"
-        (submitted)="onAISubmit($event)"
       />
     }
   `,
@@ -169,7 +168,6 @@ import { DocumentsFacade } from '../../store/documents.facade';
 })
 export class SharedContentComponent implements OnInit {
   private readonly facade = inject(DocumentsFacade);
-  private readonly api = inject(DocumentsApiService);
 
   readonly adminDocuments = this.facade.adminDocuments;
   readonly adminDocumentsLoading = this.facade.adminDocumentsLoading;
@@ -194,15 +192,6 @@ export class SharedContentComponent implements OnInit {
   }
 
   onAIModalClose(): void {
-    this.selectedDocumentForAI.set(null);
-  }
-
-  onAISubmit(question: string): void {
-    const doc = this.selectedDocumentForAI();
-    if (doc) {
-      console.log(`Question about "${doc.filename}": ${question}`);
-      // TODO: Implement AI API call
-    }
     this.selectedDocumentForAI.set(null);
   }
 }

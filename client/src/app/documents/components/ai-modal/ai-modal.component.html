@@ -19,7 +19,11 @@
         [ngModel]="question()"
         (ngModelChange)="onQuestionChange($event)"
         (keydown)="onKeydown($event)"
+        [disabled]="loading()"
       ></textarea>
+      @if (aiResponse(); as response) {
+        <div class="ai-response">{{ response }}</div>
+      }
     </div>
 
     <div class="ai-modal-footer">
@@ -27,16 +31,14 @@
         type="button"
         class="cancel-button"
         (click)="onClose()"
-      >
-        Cancel
+      >Cancel
       </button>
       <button
         type="button"
         class="submit-button"
         (click)="onSubmit()"
-        [disabled]="!question().trim()"
-      >
-        Ask AI
+        [disabled]="!question().trim() || loading()"
+      >{{ loading() ? 'Asking…' : 'Ask AI' }}
       </button>
     </div>
   </div>

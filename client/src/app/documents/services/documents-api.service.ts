@@ -15,6 +15,10 @@ export class DocumentsApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}`;
 
+  askAi(question: string, documentId: number): Observable<string> {
+    return this.http.post(`${this.baseUrl}/documents/ask-ai`, { question, documentId }, { responseType: 'text' });
+  }
+
   listMyCategories(pageable: Pageable): Observable<PagedResponse<Category>> {
     return this.http.get<PagedResponse<Category>>(
       `${this.baseUrl}/categories/mine`,

@@ -153,19 +153,14 @@ public class DocumentServiceImpl implements DocumentService {
                 ))
                 .collect(Collectors.joining("\n\n-------------------\n\n"));
         String prompt = """
-                You are a helpful document assistant.
-                Answer the user's question using ONLY the provided context.
-                If the answer cannot be found in the context, respond exactly:
-                "You're not aware of it."
+                You are a helpful document assistant. Answer the user's question using ONLY the provided context.
+                If the answer cannot be found in the context, respond exactly: "Sorry, I can't answer based on the knowledge I have been provided."
                 After answering, provide the reference page number(s).
                 Output format:
                 <answer>
-                Reference Pages:
-                <comma separated page numbers>
-                Context:
-                %s
-                Question:
-                %s
+                Reference Pages: <comma separated page numbers>
+                Context:  %s
+                Question: %s
                 """.formatted(context, question);
 
          return chatClient

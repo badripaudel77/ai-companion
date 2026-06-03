@@ -100,8 +100,8 @@
   @if (selectedDocumentForAI(); as aiDoc) {
     <app-ai-modal
       [documentName]="aiDoc.filename"
+      [documentId]="aiDoc.id"
       (closed)="onAIModalClose()"
-      (submitted)="onAISubmit($event)"
     />
   }
 </section>

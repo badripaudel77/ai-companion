@@ -62,7 +62,7 @@ export class DashboardPageComponent {
     const expanded = this.expandedCategoryIds();
     if (expanded.has(categoryId)) {
         expanded.delete(categoryId);
-    } 
+    }
     else {
         expanded.add(categoryId);
         this.loadDocumentsForCategory(categoryId);
@@ -110,15 +110,6 @@ export class DashboardPageComponent {
   };
 
   protected readonly onAIModalClose = (): void => {
-      this.selectedDocumentForAI.set(null);
-  };
-
-  protected readonly onAISubmit = (question: string): void => {
-      const doc = this.selectedDocumentForAI();
-      if (doc) {
-          console.log(`Question about "${doc.filename}": ${question}`);
-          // TODO: Implement AI API call
-      }
       this.selectedDocumentForAI.set(null);
   };
 }
