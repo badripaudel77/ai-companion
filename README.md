@@ -1,4 +1,4 @@
-# My Document  Companion
+# AI Powered Document Companion - using Spring AI and RAG
 
 My Companion is a full-stack document companion app for organizing notes, uploading files, and preparing for AI-assisted retrieval with RAG.
 
