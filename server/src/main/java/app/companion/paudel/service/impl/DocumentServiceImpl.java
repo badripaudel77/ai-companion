@@ -39,7 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final UserRepository userRepository;
     private final DocumentEmbeddingService documentEmbeddingService;
     private final VectorStore vectorStore;
-    private final ChatClient chatClient;
+     private final ChatClient chatClient;
 
     @Override
     public DocumentDto uploadDocument(Long categoryId, MultipartFile file, Integer ownerId) {
@@ -125,7 +125,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     // Link to DOC: https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html
     @Override
-    public List<Document> getResponseFromAI(String question, Long documentId) {
+    public List<Document> getSimilarChunks(String question, Long documentId) {
         FilterExpressionBuilder b = new FilterExpressionBuilder();
         return vectorStore.similaritySearch(SearchRequest.builder()
                 .query(question)
@@ -159,7 +159,6 @@ public class DocumentServiceImpl implements DocumentService {
                 "You're not aware of it."
                 After answering, provide the reference page number(s).
                 Output format:
-                Answer:
                 <answer>
                 Reference Pages:
                 <comma separated page numbers>
@@ -169,7 +168,11 @@ public class DocumentServiceImpl implements DocumentService {
                 %s
                 """.formatted(context, question);
 
-        return chatClient.prompt().user(prompt).call().content();
+         return chatClient
+                 .prompt()
+                 .user(prompt)
+                 .call()
+                 .content();
     }
 
     private DocumentDto toDto(UserDocument d) {

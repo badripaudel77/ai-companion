@@ -43,7 +43,6 @@ public class DocumentEmbeddingServiceImpl implements DocumentEmbeddingService {
             if (contentType == null) {
                 throw new RuntimeException("Unknown file type");
             }
-
             // Select the native Spring AI reader based on the content type
             List<Document> rawDocuments;
             if (contentType.equals("application/pdf")) {
@@ -58,7 +57,6 @@ public class DocumentEmbeddingServiceImpl implements DocumentEmbeddingService {
             else {
                 throw new RuntimeException("Unsupported file type: " + contentType);
             }
-
             // Inject custom database metadata into the read documents
             for (Document doc : rawDocuments) {
                 doc.getMetadata().putAll(Map.of(
@@ -68,9 +66,13 @@ public class DocumentEmbeddingServiceImpl implements DocumentEmbeddingService {
             }
             // Split and chunk using tokens
             List<Document> splitDocs = tokenTextSplitter.apply(rawDocuments);
-
-            // Save  to Vector Database (Pgvector) - Spring AI will handle the embedding and storage in one step
-            vectorStore.add(splitDocs);
+            // Save  to Vector Database (PgVector) - Spring AI will handle the embedding and storage in one step
+            try {
+                vectorStore.add(splitDocs);
+            } catch (Exception e) {
+                System.out.println("Error adding documents to vector store: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         catch (IOException e) {
             throw new RuntimeException("Failed to process and embed document", e);

@@ -88,7 +88,7 @@ public class DocumentController {
     // Search the documents using RAG pipeline and return the relevant documents based on the query
     @PostMapping("/ask-ai")
     public ResponseEntity<String> askAI(@RequestBody AIRequest request) {
-        List<Document> chunks = documentService.getResponseFromAI(request.question(), request.documentId());
+        List<Document> chunks = documentService.getSimilarChunks(request.question(), request.documentId());
         String result = documentService.getFormattedResponseFromAI(chunks, request.question());
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

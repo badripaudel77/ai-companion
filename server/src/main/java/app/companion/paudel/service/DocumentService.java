@@ -21,7 +21,7 @@ public interface DocumentService {
 
     DocumentDto getDocument(Long documentId, Integer requesterId);
 
-    List<Document> getResponseFromAI(String question, Long documentId);
+    List<Document> getSimilarChunks(String question, Long documentId);
 
     String getFormattedResponseFromAI(List<Document> chunks, String question);
 }

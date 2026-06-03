@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>25</java.version>
-        <spring-ai.version>1.1.7</spring-ai.version>
+        <spring-ai.version>2.0.0-M8</spring-ai.version>
         <jjwt.version>0.11.5</jjwt.version>
         <lombok.version>1.18.42</lombok.version>
     </properties>
@@ -61,7 +61,6 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-advisors-vector-store</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -74,18 +73,20 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
         </dependency>
+        <!-- Embedding model / ChatClient -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-google-genai</artifactId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
-        <!-- Embedding model -->
+
         <!-- REF : https://docs.spring.io/spring-ai/reference/api/embeddings/google-genai-embeddings-text.html -->
-        <dependency>
+        <!--
+         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-google-genai-embedding</artifactId>
         </dependency>
-
-        <!-- Can use other LLM models such as OPEN AI -->
+        -->
+        <!-- Can use other LLM models  -->
 
         <!-- JWT (JJWT) -->
         <dependency>
@@ -93,14 +94,12 @@
             <artifactId>jjwt-api</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
@@ -174,6 +173,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -187,7 +187,6 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
                         </exclude>
                     </excludes>
                 </configuration>
