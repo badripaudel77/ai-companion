@@ -1,18 +1,23 @@
 package app.companion.paudel.controller;
 
+import app.companion.paudel.dto.AIRequest;
 import app.companion.paudel.dto.DocumentDto;
 import app.companion.paudel.service.DocumentService;
 import app.companion.paudel.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.document.Document;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -78,5 +83,15 @@ public class DocumentController {
                 .contentLength(data.length)
                 .contentType(mediaType)
                 .body(resource);
+    }
+
+    // Search the documents using RAG pipeline and return the relevant documents based on the query
+    @PostMapping("/ask-ai")
+    public ResponseEntity<String> askAI(@RequestBody AIRequest request) {
+        List<Document> chunks = documentService.getResponseFromAI(request.question(), request.documentId());
+        String result = documentService.getFormattedResponseFromAI(chunks, request.question());
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result);
     }
 }
