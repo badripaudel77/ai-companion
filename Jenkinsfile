@@ -36,7 +36,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo '=== Stage 1: Checking out repository source code, on a branch :  ${env.BRANCH_NAME}'
+                echo "=== Stage 1: Checking out repository source code, on a branch :  ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
@@ -80,10 +80,12 @@ def sendEmailNotification(String status, String color, String details) {
     String recipients = params.NOTIFICATION_RECIPIENTS ?: 'dev@myteam.com'
     echo "Sending Email Notification to ${recipients} : Status=${status}, Color=${color}"
 
+    /*
     emailext (
         to: "${recipients}",
         subject: "[Jenkins Pipeline] ${status}: ${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]",
         body: "Build Details: ${details}",
         mimeType: 'text/html'
     )
+    */
 }
