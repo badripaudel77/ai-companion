@@ -37,23 +37,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "=== Stage 1: Checking out repository source code, on a branch :  ${env.BRANCH_NAME}"
+                echo "=== Stage 1: Checking out repository source code"
                 checkout scm
             }
         }
 
         stage('Build & Containerize Frontend') {
             steps {
+                echo "Currently on directory: ${pwd()}"
                 dir("${CLIENT_DIR}") {
-                    echo '=== Stage 2: Simulating Angular compilation & Nginx Docker build ==='
+                    echo "Checked out to directory: ${pwd()}"
+                    echo "=== Stage 2: Simulating Angular compilation & Nginx Docker build on directory ${CLIENT_DIR} ==="
+                    // bat command for Windows env ( sh for Linux)
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
 
         stage('Build & Containerize Backend') {
             steps {
+                echo "Currently on directory: ${pwd()}"
                 dir("${SERVER_DIR}") {
-                    echo '=== Stage 3: Simulating Spring Boot REST API build & containerization ==='
+                    echo "Checked out to directory: ${pwd()}"
+                    echo "=== Stage 3: Simulating Spring Boot REST API build & containerization on directory ${SERVER_DIR} ==="
+                    bat "mvn clean package -DskipTests"
                 }
             }
         }
@@ -82,7 +90,7 @@ def sendEmailNotification(String status, String color, String details) {
         echo "Email notification is disabled. Skipping email sending."
         return
     }
-    String recipients = params.NOTIFICATION_RECIPIENTS ?: 'dev@myteam.com'
+    String recipients = params.NOTIFICATION_RECIPIENTS ?: 'devs@myteam.com'
     emailext (
         to: "${recipients}",
         subject: "[Jenkins Pipeline] ${status}: ${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]",
