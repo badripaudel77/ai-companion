@@ -4,6 +4,7 @@ pipeline {
      // Define parameters for the pipeline, allowing users to customize the email during build trigger
      parameters {
             string(name: 'NOTIFICATION_RECIPIENTS', defaultValue: 'devs@myteam.com', description: 'Email(s) to notify on build result')
+            booleanParam(name: 'SEND_EMAIL', defaultValue: false, description: 'Whether to send email notification on build result')
      }
 
     options {
@@ -77,15 +78,15 @@ pipeline {
 }
 
 def sendEmailNotification(String status, String color, String details) {
+    if(!params.SEND_EMAIL) {
+        echo "Email notification is disabled. Skipping email sending."
+        return
+    }
     String recipients = params.NOTIFICATION_RECIPIENTS ?: 'dev@myteam.com'
-    echo "Sending Email Notification to ${recipients} : Status=${status}, Color=${color}"
-
-    /*
     emailext (
         to: "${recipients}",
         subject: "[Jenkins Pipeline] ${status}: ${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]",
         body: "Build Details: ${details}",
         mimeType: 'text/html'
     )
-    */
 }
