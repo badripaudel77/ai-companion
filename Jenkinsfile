@@ -44,6 +44,10 @@ pipeline {
         }
         stage('Build & Containerize Frontend') {
             steps {
+                echo """
+                    ℹ️ Starting client Build ...
+                    ----------------------------
+                """
                 echo "Currently on directory: ${pwd()}"
                 dir("${CLIENT_DIR}") {
                     echo "Checked out to directory: ${pwd()}"
@@ -63,20 +67,30 @@ pipeline {
 
                     bat 'npm run test -- --watch=false'
                     bat "npm run build -- --configuration=${params.DEPLOY_ENV}"
-                    echo ' ℹ️ Client build completed successfully.\n -----------------------'
+                    echo """
+                           ℹ️ Client build completed successfully.
+                           ---------------------------------------
+                          """
                 }
             }
         }
 
         stage('Build & Containerize Backend') {
             steps {
+                   echo """
+                         ℹ️ Starting server Build ...
+                          ---------------------------
+                   """
                 echo "Currently on directory: ${pwd()}"
                 dir("${SERVER_DIR}") {
                     echo "Checked out to directory: ${pwd()}"
                     echo "=== Stage 3: Simulating Spring Boot REST API build & containerization on directory ${SERVER_DIR} ==="
                     bat "mvn clean package -DskipTests"
                 }
-                echo ' ℹ️ Server build completed successfully.\n -----------------------'
+                echo """
+                     ℹ️ Server build completed successfully.
+                     ---------------------------------------
+                """
             }
         }
     }
