@@ -63,6 +63,7 @@ pipeline {
 
                     bat 'npm run test -- --watch=false'
                     bat "npm run build -- --configuration=${params.DEPLOY_ENV}"
+                    echo ' ℹ️ Client build completed successfully.\n -----------------------'
                 }
             }
         }
@@ -75,6 +76,7 @@ pipeline {
                     echo "=== Stage 3: Simulating Spring Boot REST API build & containerization on directory ${SERVER_DIR} ==="
                     bat "mvn clean package -DskipTests"
                 }
+                echo ' ℹ️ Server build completed successfully.\n -----------------------'
             }
         }
     }
@@ -82,12 +84,12 @@ pipeline {
     post {
         success {
             script {
-                sendEmailNotification('SUCCESS', '#28a745', "Successfully built ${FRONTEND_IMAGE}:${IMAGE_TAG} and ${BACKEND_IMAGE}:${IMAGE_TAG}")
+                sendEmailNotification('#28a745', "Successfully built ${FRONTEND_IMAGE}:${IMAGE_TAG} and ${BACKEND_IMAGE}:${IMAGE_TAG}")
             }
         }
         failure {
             script {
-                sendEmailNotification('FAILURE', '#dc3545', 'Pipeline build failed.')
+                sendEmailNotification('#dc3545', 'Pipeline build failed.')
             }
         }
         always {
@@ -97,15 +99,15 @@ pipeline {
     }
 }
 
-def sendEmailNotification(String status, String color, String details) {
+def sendEmailNotification(String color, String details) {
     if(!params.SEND_EMAIL) {
-        echo "Email notification is disabled. Skipping email sending."
+        echo "Email notification is disabled. Skipping email sending. The build status is: ${currentBuild.result}"
         return
     }
     String recipients = params.NOTIFICATION_RECIPIENTS ?: 'devs@myteam.com'
     emailext (
         to: "${recipients}",
-        subject: "[Jenkins Pipeline] ${status}: ${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]",
+        subject: "[Jenkins Pipeline] ${currentBuild.result}: ${env.JOB_NAME} [Build #${env.BUILD_NUMBER}]",
         body: "Build Details: ${details}",
         mimeType: 'text/html'
     )
