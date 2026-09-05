@@ -6,6 +6,7 @@ pipeline {
         string(name: 'NOTIFICATION_RECIPIENTS', defaultValue: 'devs@myteam.com', description: 'Email(s) to notify on build result')
         booleanParam(name: 'SEND_EMAIL', defaultValue: false, description: 'Whether to send email notification on build result')
         choice(name: 'DEPLOY_ENV', choices: ['development', 'production'], description: 'Which environment to build for')
+        booleanParam(name: 'PUBLISH_IMAGE', defaultValue: false, description: 'Push image to Artifactory after building')
     }
 
     options {
@@ -26,10 +27,11 @@ pipeline {
     environment {
         CLIENT_DIR     = 'client'
         SERVER_DIR     = 'server'
-        FRONTEND_IMAGE = 'my-companion-frontend'
-        BACKEND_IMAGE  = 'my-companion-backend'
+        FRONTEND_IMAGE = 'client-aicompanion'
+        BACKEND_IMAGE  = 'server-aicompanion'
         IMAGE_TAG      = "${BUILD_NUMBER}"
         SPRING_PROFILE = 'DEV'
+        ARTIFACTORY_URL = 'docker.io/badripaudel77'
     }
 
     stages {
@@ -56,7 +58,7 @@ pipeline {
                 dir("${CLIENT_DIR}") {
                     echo 'ℹ️ Starting client Build ...'
                     echo "Checked out to directory: ${pwd()}"
-                    echo "=== Stage 2: Installing dependencies & running quality checks (configuration on : ${params.DEPLOY_ENV}) environment ==="
+                    echo "=== Stage 2: Installing dependencies & running quality checks (configuration on : ${params.DEPLOY_ENV} environment) ==="
                     bat 'npm ci'
                     script { runNpmLint() }
                     bat 'npm run test -- --watch=false'
@@ -73,6 +75,39 @@ pipeline {
             }
         }
 
+        stage('Frontend: Package') {
+              steps {
+                  dir("${CLIENT_DIR}") {
+                      echo 'ℹ️ Starting client packaging ...'
+                      echo "Checked out to directory: ${pwd()}"
+                      echo "=== Stage: Building Docker image for frontend in ${CLIENT_DIR} ==="
+                      bat "docker build --build-arg BUILD_CONFIG=${params.DEPLOY_ENV} -t ${FRONTEND_IMAGE}:${IMAGE_TAG} ."
+                  }
+                  echo 'ℹ️ Client packaging completed successfully ...'
+              }
+        }
+
+        stage('Frontend: Publish') {
+            when {
+                expression { params.PUBLISH_IMAGE == true }
+            }
+            steps {
+                dir("${CLIENT_DIR}") {
+                    withCredentials([usernamePassword(credentialsId: 'ARTIFACTORY_CREDS',
+                        usernameVariable: 'AF_USER',
+                        passwordVariable: 'AF_PASS')]) {
+                        echo "ℹ️ Publishing ${FRONTEND_IMAGE}:${IMAGE_TAG} to ${ARTIFACTORY_URL} owned by ${env.AF_USER}..."
+                        bat 'echo %AF_PASS% | docker login -u %AF_USER% --password-stdin'
+                        bat "docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} ${ARTIFACTORY_URL}/${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} ${ARTIFACTORY_URL}/${FRONTEND_IMAGE}:latest"
+                        bat "docker push ${ARTIFACTORY_URL}/${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker push ${ARTIFACTORY_URL}/${FRONTEND_IMAGE}:latest"
+                        bat 'docker logout'
+                        echo "✔️ Published ${FRONTEND_IMAGE}:${IMAGE_TAG} and :latest to ${ARTIFACTORY_URL}."
+                    }
+                }
+            }
+        }
 
         stage('Backend: Build & Package') {
             steps {
