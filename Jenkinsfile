@@ -5,6 +5,7 @@ pipeline {
      parameters {
             string(name: 'NOTIFICATION_RECIPIENTS', defaultValue: 'devs@myteam.com', description: 'Email(s) to notify on build result')
             booleanParam(name: 'SEND_EMAIL', defaultValue: false, description: 'Whether to send email notification on build result')
+            choice(name: 'DEPLOY_ENV', choices: ['development', 'production'], description: 'Which environment to build for')
      }
 
     options {
@@ -37,20 +38,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "=== Stage 1: Checking out repository source code"
+                echo "=== Stage 1: Checking out repository source code in JOB_NAME ${env.JOB_NAME} ==="
                 checkout scm
             }
         }
-
         stage('Build & Containerize Frontend') {
             steps {
                 echo "Currently on directory: ${pwd()}"
                 dir("${CLIENT_DIR}") {
                     echo "Checked out to directory: ${pwd()}"
-                    echo "=== Stage 2: Simulating Angular compilation & Nginx Docker build on directory ${CLIENT_DIR} ==="
-                    // bat command for Windows env ( sh for Linux)
-                    bat 'npm install'
-                    bat 'npm run build'
+                    echo "=== Stage 2: Building & testing Angular app in ${CLIENT_DIR} (configuration: ${params.DEPLOY_ENV}) ==="
+
+                    bat 'npm ci'
+
+                    script {
+                        def lintResult = bat(script: 'npm run lint', returnStatus: true)
+                        if (lintResult != 0) {
+                            currentBuild.result = 'UNSTABLE'
+                            echo "❌ Lint found issues (exit code ${lintResult}) — continuing anyway, build marked UNSTABLE."
+                        } else {
+                            echo "✔️ Lint passed."
+                        }
+                    }
+
+                    bat 'npm run test -- --watch=false'
+                    bat "npm run build -- --configuration=${params.DEPLOY_ENV}"
                 }
             }
         }
