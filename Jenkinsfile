@@ -1,12 +1,12 @@
 pipeline {
     agent any
 
-     // Define parameters for the pipeline, allowing users to customize the email during build trigger
-     parameters {
-            string(name: 'NOTIFICATION_RECIPIENTS', defaultValue: 'devs@myteam.com', description: 'Email(s) to notify on build result')
-            booleanParam(name: 'SEND_EMAIL', defaultValue: false, description: 'Whether to send email notification on build result')
-            choice(name: 'DEPLOY_ENV', choices: ['development', 'production'], description: 'Which environment to build for')
-     }
+    // Define parameters for the pipeline, allowing users to customize the email during build trigger
+    parameters {
+        string(name: 'NOTIFICATION_RECIPIENTS', defaultValue: 'devs@myteam.com', description: 'Email(s) to notify on build result')
+        booleanParam(name: 'SEND_EMAIL', defaultValue: false, description: 'Whether to send email notification on build result')
+        choice(name: 'DEPLOY_ENV', choices: ['development', 'production'], description: 'Which environment to build for')
+    }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
@@ -24,15 +24,12 @@ pipeline {
 
     // Constant environment variables for the pipeline, can be accessed in any stage using ${env.VARIABLE_NAME} or $VARIABLE_NAME
     environment {
-        CLIENT_DIR              = 'client'
-        SERVER_DIR              = 'server'
-
-        // Separate image names for independent artifacts
-        FRONTEND_IMAGE          = 'my-companion-frontend'
-        BACKEND_IMAGE           = 'my-companion-backend'
-        IMAGE_TAG               = "${BUILD_NUMBER}"
-
-        SPRING_PROFILE          = 'DEV'
+        CLIENT_DIR     = 'client'
+        SERVER_DIR     = 'server'
+        FRONTEND_IMAGE = 'my-companion-frontend'
+        BACKEND_IMAGE  = 'my-companion-backend'
+        IMAGE_TAG      = "${BUILD_NUMBER}"
+        SPRING_PROFILE = 'DEV'
     }
 
     stages {
@@ -42,55 +39,50 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build & Containerize Frontend') {
+
+        stage('Environment Check') {
+                steps {
+                    echo '=== Stage: Verifying tool versions ==='
+                    bat 'java -version'
+                    bat 'node --version'
+                    bat 'npm --version'
+                    bat 'mvn -version'
+                    bat 'docker --version'
+                }
+        }
+
+        stage('Frontend: Install & Quality Checks') {
             steps {
-                echo """
-                    ℹ️ Starting client Build ...
-                    ----------------------------
-                """
-                echo "Currently on directory: ${pwd()}"
                 dir("${CLIENT_DIR}") {
+                    echo 'ℹ️ Starting client Build ...'
                     echo "Checked out to directory: ${pwd()}"
-                    echo "=== Stage 2: Building & testing Angular app in ${CLIENT_DIR} (configuration: ${params.DEPLOY_ENV}) ==="
-
+                    echo "=== Stage 2: Installing dependencies & running quality checks (configuration on : ${params.DEPLOY_ENV}) environment ==="
                     bat 'npm ci'
-
-                    script {
-                        def lintResult = bat(script: 'npm run lint', returnStatus: true)
-                        if (lintResult != 0) {
-                            currentBuild.result = 'UNSTABLE'
-                            echo "❌ Lint found issues (exit code ${lintResult}) — continuing anyway, build marked UNSTABLE."
-                        } else {
-                            echo "✔️ Lint passed."
-                        }
-                    }
-
+                    script { runNpmLint() }
                     bat 'npm run test -- --watch=false'
-                    bat "npm run build -- --configuration=${params.DEPLOY_ENV}"
-                    echo """
-                           ℹ️ Client build completed successfully.
-                           ---------------------------------------
-                          """
                 }
             }
         }
 
-        stage('Build & Containerize Backend') {
+        stage('Frontend: Build') {
             steps {
-                   echo """
-                         ℹ️ Starting server Build ...
-                          ---------------------------
-                   """
-                echo "Currently on directory: ${pwd()}"
+                dir("${CLIENT_DIR}") {
+                    bat "npm run build -- --configuration=${params.DEPLOY_ENV}"
+                    echo 'ℹ️ Client build completed successfully ...'
+                }
+            }
+        }
+
+
+        stage('Backend: Build & Package') {
+            steps {
                 dir("${SERVER_DIR}") {
+                    echo 'ℹ️ Starting server Build ... '
                     echo "Checked out to directory: ${pwd()}"
                     echo "=== Stage 3: Simulating Spring Boot REST API build & containerization on directory ${SERVER_DIR} ==="
                     bat "mvn clean package -DskipTests"
                 }
-                echo """
-                     ℹ️ Server build completed successfully.
-                     ---------------------------------------
-                """
+                echo 'ℹ️ Server build completed successfully ... '
             }
         }
     }
@@ -110,6 +102,16 @@ pipeline {
             echo '=== Post Action: Cleaning up workspace ==='
             cleanWs()
         }
+    }
+}
+
+def runNpmLint() {
+    def lintResult = bat(script: 'npm run lint', returnStatus: true)
+    if (lintResult != 0) {
+        currentBuild.result = 'UNSTABLE'
+        echo "❌ Lint found issues (exit code ${lintResult}) — continuing anyway, build marked UNSTABLE."
+    } else {
+        echo "✔️ Lint passed."
     }
 }
 
