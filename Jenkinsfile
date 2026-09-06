@@ -109,15 +109,72 @@ pipeline {
             }
         }
 
-        stage('Backend: Build & Package') {
+        stage('Backend: Build') {
             steps {
                 dir("${SERVER_DIR}") {
                     echo 'ℹ️ Starting server Build ... '
                     echo "Checked out to directory: ${pwd()}"
-                    echo "=== Stage 3: Simulating Spring Boot REST API build & containerization on directory ${SERVER_DIR} ==="
+                    echo "=== Stage: Building Spring Boot app in ${SERVER_DIR} ==="
                     bat "mvn clean package -DskipTests"
                 }
                 echo 'ℹ️ Server build completed successfully ... '
+            }
+        }
+        stage('Backend: Package') {
+            steps {
+                dir("${SERVER_DIR}") {
+                    echo "=== Stage: Building Docker image for backend in ${SERVER_DIR} ==="
+                    bat "docker build -t ${BACKEND_IMAGE}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Backend: Publish') {
+            when {
+                expression { params.PUBLISH_IMAGE == true }
+            }
+            steps {
+                dir("${SERVER_DIR}") {
+                    withCredentials([usernamePassword(credentialsId: 'ARTIFACTORY_CREDS',
+                        usernameVariable: 'AF_USER',
+                        passwordVariable: 'AF_PASS')]) {
+                        echo "ℹ️ Publishing ${BACKEND_IMAGE}:${IMAGE_TAG} to ${ARTIFACTORY_URL} owned by ${env.AF_USER}..."
+                        bat 'echo %AF_PASS% | docker login -u %AF_USER% --password-stdin'
+                        bat "docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} ${ARTIFACTORY_URL}/${BACKEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} ${ARTIFACTORY_URL}/${BACKEND_IMAGE}:latest"
+                        bat "docker push ${ARTIFACTORY_URL}/${BACKEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker push ${ARTIFACTORY_URL}/${BACKEND_IMAGE}:latest"
+                        bat 'docker logout'
+                        echo "✔️ Published ${BACKEND_IMAGE}:${IMAGE_TAG} and :latest to ${ARTIFACTORY_URL}."
+                    }
+                }
+            }
+        }
+
+        stage('Local Artifacts Cleanup') {
+            steps {
+                echo 'ℹ️ Stage: Cleaning up workspace ...'
+                cleanWs()
+                echo 'ℹ️ Removing local Docker images for frontend and backend in parallel ...'
+            }
+        }
+
+        stage('Remove Docker Images') {
+            parallel {
+                stage('Remove Frontend Image') {
+                    steps {
+                        echo "ℹ️ Removing image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker rmi ${FRONTEND_IMAGE}:${IMAGE_TAG} || echo 'not found'"
+                        echo "✔️ Frontend image cleanup step completed."
+                    }
+                }
+                stage('Remove Backend Image') {
+                    steps {
+                        echo "ℹ️ Removing image: ${BACKEND_IMAGE}:${IMAGE_TAG}"
+                        bat "docker rmi ${BACKEND_IMAGE}:${IMAGE_TAG} || echo 'not found'"
+                        echo "✔️ Backend image cleanup step completed."
+                    }
+                }
             }
         }
     }
